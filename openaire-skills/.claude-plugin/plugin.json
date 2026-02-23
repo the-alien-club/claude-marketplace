@@ -1,0 +1,8 @@
+{
+  "name": "openaire-skills",
+  "description": "Skills for exploring the OpenAIRE Research Graph via MCP. Includes calibrated tuning variables, context management rules, workflow patterns, and anti-patterns derived from empirical testing.",
+  "version": "1.0.0",
+  "author": {
+    "name": "nirodha"
+  }
+}
