@@ -2,7 +2,7 @@
   "mcpServers": {
     "openaire-local": {
       "type": "http",
-      "url": "https://openaire.mcp.alpha.alien.club/mcp"
+      "url": "https://nontrunked-kinsley-bedfast.ngrok-free.dev/mcp"
     }
   }
 }
