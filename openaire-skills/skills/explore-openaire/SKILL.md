@@ -28,24 +28,6 @@ When the user's intent matches a scenario below, **you MUST read the scenario gu
 
 To discover all available scenarios and vocabulary resources at runtime, call `ListMcpResourcesTool` with `server="openaire-local"`.
 
-## Data Coverage
-
-- 600M+ research products across all disciplines.
-- Strong EU-funded project coverage (Horizon 2020/Europe). NSF, NIH also indexed.
-- Dataset metadata is sparse — subject tags often empty, FOS filters unreliable on datasets.
-- Person/researcher index is very sparse — use publication-based author discovery instead.
-- ScholeXplorer citation links are partial — incoming citations (`target_pid`) much better indexed than outgoing references (`doi`).
-
-## Output Size Reference
-
-| Size | Chars | Tools |
-|------|-------|-------|
-| **Tiny** | 200-600 | `analyze_research_trends`, `find_by_*_class` (5 results), search with `detail="minimal"` + `page_size=3` |
-| **Small** | 600-1500 | `get_research_product_details`, `search_datasets` (5 results) |
-| **Medium** | 1500-2500 | `explore_research_relationships`, `get_citation_network` (max_nodes=50), `discover_by_coauthors` |
-| **Large** | 2500-4000 | `get_author_profile` (limit=20), `search_research_products` (standard, 10 results) |
-| **Context bomb** | 15K-30K+ | `get_project_outputs` (default), `analyze_coauthorship_network`, `get_author_profile` (limit=100+) |
-
 ## Context Budget Awareness
 
 ### Delegation Threshold
@@ -99,7 +81,19 @@ clusters. Report node count, edge count, and key collaborator names.
 
 OpenAIRE tools are stateless — run multiple searches in parallel when exploring multiple facets (e.g., publications + datasets + software for the same topic).
 
-## Bibliometric Classes
+## Output Size Reference
+
+| Size | Chars | Tools |
+|------|-------|-------|
+| **Tiny** | 200-600 | `analyze_research_trends`, `find_by_*_class` (5 results), search with `detail="minimal"` + `page_size=3` |
+| **Small** | 600-1500 | `get_research_product_details`, `search_datasets` (5 results) |
+| **Medium** | 1500-2500 | `explore_research_relationships`, `get_citation_network` (max_nodes=50), `discover_by_coauthors` |
+| **Large** | 2500-4000 | `get_author_profile` (limit=20), `search_research_products` (standard, 10 results) |
+| **Context bomb** | 15K-30K+ | `get_project_outputs` (default), `analyze_coauthorship_network`, `get_author_profile` (limit=100+) |
+
+## Reference Tables
+
+### Bibliometric Classes
 
 | Class | Percentile | Meaning |
 |-------|-----------|---------|
@@ -111,15 +105,13 @@ OpenAIRE tools are stateless — run multiple searches in parallel when explorin
 
 Four metrics: **influence** (field-normalized, time-adjusted), **popularity** (recent velocity), **impulse** (early momentum), **citation_count** (absolute).
 
-## FOS Top-Level Codes
+### FOS Top-Level Codes
 
 Use full label with code prefix for the `fos` parameter: `"01 natural sciences"`, `"02 engineering and technology"`, `"03 medical and health sciences"`, `"04 agricultural and veterinary sciences"`, `"05 social sciences"`, `"06 humanities and the arts"`.
 
 Common: `"0102 computer and information sciences"`, `"0301 basic medicine"`, `"0502 economics and business"`, `"0106 biological sciences"`.
 
-**FOS works for publications. FOS + text query + `type=["dataset"]` returns 0.**
-
-## Response Structure Differences
+### Response Structure Differences
 
 - Most search tools: `results[]`
 - `search_datasets`: `datasets[]`
