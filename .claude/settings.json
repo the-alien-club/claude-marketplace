@@ -1,13 +1,13 @@
 {
   "extraKnownMarketplaces": {
-    "openaire-skills": {
+    "alien-openscience": {
       "source": {
         "source": "directory",
-        "path": "/home/nirodha/Desktop/AI/Alien/datastreaming/mcps/mcp-plugins/openaire-skills"
+        "path": "/home/nirodha/Desktop/AI/Alien/datastreaming/MCPs/mcp-plugins/alien-openscience"
       }
     }
   },
   "enabledPlugins": {
-    "openaire-skills@openaire-skills": true
+    "openaire@alien-openscience": true
   }
 }
