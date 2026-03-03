@@ -11,7 +11,7 @@ You are exploring research metadata through the OpenAIRE MCP server. This server
 
 When the user's intent matches a scenario below, **you MUST read the scenario guide** before proceeding. Each guide contains domain context, step-by-step workflows, and tool-specific gotchas. Access via either method:
 
-- **MCP resource** (preferred): Use `ReadMcpResourceTool` with `server="openaire-local"` and the URI below.
+- **MCP resource** (preferred): Use `ReadMcpResourceTool` with `server="plugin:openaire:openaire-local"` and the URI below.
 - **Local file**: Use the `Read` tool with the file path below (relative to this skill's directory).
 
 | Scenario | When to use | MCP Resource URI | Local file |
@@ -26,7 +26,7 @@ When the user's intent matches a scenario below, **you MUST read the scenario gu
 | **Find primary publication** | Locating the canonical paper for a tool/method/dataset | `openaire://scenario/find-primary-publication` | `scenarios/find-primary-publication.md` |
 | **Assess dataset relevance** | Evaluating dataset suitability for research | `openaire://scenario/assess-dataset-relevance` | `scenarios/assess-dataset-relevance.md` |
 
-To discover all available scenarios and vocabulary resources at runtime, call `ListMcpResourcesTool` with `server="openaire-local"`.
+To discover all available scenarios and vocabulary resources at runtime, call `ListMcpResourcesTool` with `server="plugin:openaire:openaire-local"`.
 
 ## Context Budget Awareness
 
@@ -48,7 +48,7 @@ Use foreground subagents only. Launch multiple Task calls in the same message fo
 
 **Product summary:**
 ```
-Use mcp__openaire-local__openaire_get_research_product_details to get metadata
+Use mcp__plugin_openaire_openaire-local__openaire_get_research_product_details to get metadata
 for DOI <doi>. Summarize in ~150 words: research question, methodology, key
 findings, significance. Report: title, authors, year, citation count, influence
 class, and your summary.
@@ -56,14 +56,14 @@ class, and your summary.
 
 **Project output analysis:**
 ```
-Use mcp__openaire-local__openaire_get_project_outputs with project_code='<code>'
+Use mcp__plugin_openaire_openaire-local__openaire_get_project_outputs with project_code='<code>'
 and page_size=100. Summarize: total outputs by type, top 5 most-cited
 publications, any datasets or software produced. Report counts and key DOIs.
 ```
 
 **Coauthorship network:**
 ```
-Use mcp__openaire-local__openaire_analyze_coauthorship_network with
+Use mcp__plugin_openaire_openaire-local__openaire_analyze_coauthorship_network with
 author_name='<name>', max_depth=1, limit=30, min_collaborations=2.
 Summarize: total collaborators, top 5 by shared papers, any cross-institutional
 clusters. Report node count, edge count, and key collaborator names.
