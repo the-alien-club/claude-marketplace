@@ -1,0 +1,16 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "alien-openscience",
+  "description": "Skills and MCP configurations for research graph exploration via OpenAIRE",
+  "owner": {
+    "name": "Alien Intelligence"
+  },
+  "plugins": [
+    {
+      "name": "openaire",
+      "description": "Explore the OpenAIRE Research Graph — 600M+ research products, citations, authors, and projects",
+      "source": "./plugins/alien-openscience",
+      "category": "research"
+    }
+  ]
+}
