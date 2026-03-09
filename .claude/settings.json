@@ -3,7 +3,7 @@
     "alien-openscience": {
       "source": {
         "source": "directory",
-        "path": "/home/nirodha/Desktop/AI/Alien/datastreaming/MCPs/mcp-plugins/alien-openscience"
+        "path": "./alien-openscience"
       }
     }
   },
