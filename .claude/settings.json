@@ -3,7 +3,7 @@
     "openaire-skills": {
       "source": {
         "source": "directory",
-        "path": "/home/nirodha/Desktop/AI/Alien/datastreaming/mcps/mcp-plugins/openaire-skills"
+        "path": "./openaire-skills"
       }
     }
   },
