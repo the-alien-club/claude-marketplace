@@ -1,6 +1,6 @@
 {
   "mcpServers": {
-    "openaire-local": {
+    "openaire-beta": {
       "type": "http",
       "url": "https://openaire.mcp.beta.alien.club/mcp"
     }
