@@ -2,7 +2,7 @@
   "mcpServers": {
     "openaire-local": {
       "type": "http",
-      "url": "https://openaire.mcp.alpha.alien.club/mcp"
+      "url": "https://openaire.mcp.beta.alien.club/mcp"
     }
   }
 }
