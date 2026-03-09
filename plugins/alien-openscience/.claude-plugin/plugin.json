@@ -1,0 +1,8 @@
+{
+  "name": "openaire",
+  "description": "Explore the OpenAIRE Research Graph via MCP — 600M+ research products, citations, authors, and projects",
+  "version": "1.0.0",
+  "author": {
+    "name": "Alien Intelligence"
+  }
+}
