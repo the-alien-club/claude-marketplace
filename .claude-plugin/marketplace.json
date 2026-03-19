@@ -1,14 +1,14 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
-  "name": "alien-openscience",
-  "description": "Skills and MCP configurations for research graph exploration via OpenAIRE",
+  "name": "alien",
+  "description": "Alien Intelligence plugin marketplace",
   "owner": {
     "name": "Alien Intelligence"
   },
   "plugins": [
     {
-      "name": "openaire",
-      "description": "Explore the OpenAIRE Research Graph — 600M+ research products, citations, authors, and projects",
+      "name": "openscience",
+      "description": "Open science toolkit — OpenAIRE Research Graph (600M+ products, citations, authors, projects) and bioRxiv/medRxiv preprint data clusters",
       "source": "./plugins/alien-openscience",
       "category": "research"
     }
