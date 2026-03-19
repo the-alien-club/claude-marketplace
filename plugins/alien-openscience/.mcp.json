@@ -3,6 +3,14 @@
     "openaire-alpha": {
       "type": "http",
       "url": "https://openaire.mcp.alpha.alien.club/mcp"
+    },
+    "datacluster-medrxiv-alpha": {
+      "type": "http",
+      "url": "https://medrxiv.mcp.alpha.alien.club/mcp"
+    },
+    "datacluster-biorxiv-alpha": {
+      "type": "http",
+      "url": "https://biorxiv.mcp.alpha.alien.club/mcp"
     }
   }
 }
