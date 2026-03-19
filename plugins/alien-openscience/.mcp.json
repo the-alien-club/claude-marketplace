@@ -6,7 +6,7 @@
     },
     "datacluster-medrxiv-alpha": {
       "type": "http",
-      "url": "https://medrxiv.mcp.alpha.alien.club/mcp"
+      "url": "https://medrxiv.mcp.beta.alien.club/mcp"
     },
     "datacluster-biorxiv-alpha": {
       "type": "http",
