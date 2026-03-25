@@ -11,7 +11,7 @@ You have access to multiple complementary research sources. Each has different s
 
 **OpenAIRE** — Structured metadata graph covering all fields of science: 600M+ research products with titles, abstracts, authors, citations, bibliometric indicators, projects, and cross-product relationships. Strong for discovery, impact assessment, and navigating the scholarly record. No full text.
 
-**bioRxiv / medRxiv** — Full-text preprint document stores with keyword and semantic search. Use when you need what's actually written in a paper — methods, experimental details, results, discussion. Load the per-source skill (`/explore-biorxiv`, `/explore-medrxiv`) for dataset details and search strategies.
+**bioRxiv / medRxiv** — Full-text preprint document stores with keyword and semantic search. Use when you need what's actually written in a paper — methods, experimental details, results, discussion. Load the per-source skill (`/openscience:explore-biorxiv`, `/openscience:explore-medrxiv`) for dataset details and search strategies.
 
 **WebSearch** — Broadest but least structured. Complements MCP sources by reaching content they don't index — specific URLs, institutional pages, very recent work, or domains not yet covered by the data clusters.
 
@@ -58,8 +58,8 @@ When you get results from multiple sources:
 
 For detailed tool routing, error patterns, and search strategies:
 
-- `/explore-openaire` — OpenAIRE Research Graph (metadata, citations, bibliometrics)
-- `/explore-biorxiv` — bioRxiv preprint data cluster (biology full-text)
-- `/explore-medrxiv` — medRxiv preprint data cluster (medical/health full-text)
+- `/openscience:explore-openaire` — OpenAIRE Research Graph (metadata, citations, bibliometrics)
+- `/openscience:explore-biorxiv` — bioRxiv preprint data cluster (biology full-text)
+- `/openscience:explore-medrxiv` — medRxiv preprint data cluster (medical/health full-text)
 
 Load the relevant skill when going deep with one source. This overview skill is sufficient for most research tasks.
