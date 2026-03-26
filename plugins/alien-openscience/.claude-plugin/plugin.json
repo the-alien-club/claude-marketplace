@@ -1,6 +1,6 @@
 {
-  "name": "openaire",
-  "description": "Explore the OpenAIRE Research Graph via MCP — 600M+ research products, citations, authors, and projects",
+  "name": "openscience",
+  "description": "Open science toolkit — OpenAIRE Research Graph (600M+ products, citations, authors, projects) and bioRxiv/medRxiv preprint data clusters",
   "version": "1.0.0",
   "author": {
     "name": "Alien Intelligence"
