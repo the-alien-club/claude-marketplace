@@ -1,16 +1,16 @@
 {
   "mcpServers": {
-    "openaire-beta": {
+    "openaire": {
       "type": "http",
-      "url": "https://openaire.mcp.beta.alien.club/mcp"
+      "url": "https://openaire.mcp.alien.club/mcp"
     },
-    "datacluster-medrxiv-beta": {
+    "datacluster-medrxiv": {
       "type": "http",
-      "url": "https://medrxiv.mcp.beta.alien.club/mcp"
+      "url": "https://medrxiv.mcp.alien.club/mcp"
     },
-    "datacluster-biorxiv-beta": {
+    "datacluster-biorxiv": {
       "type": "http",
-      "url": "https://biorxiv.mcp.beta.alien.club/mcp"
+      "url": "https://biorxiv.mcp.alien.club/mcp"
     }
   }
 }
