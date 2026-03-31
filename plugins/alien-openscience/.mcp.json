@@ -4,7 +4,7 @@
       "type": "http",
       "url": "https://openaire.mcp.alpha.alien.club/mcp"
     },
-    "datacluster-medrxiv-alpha": {
+    "datacluster-medrxiv-beta": {
       "type": "http",
       "url": "https://medrxiv.mcp.beta.alien.club/mcp"
     },
