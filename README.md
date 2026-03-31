@@ -1,6 +1,6 @@
 # Alien Open Science Plugin
 
-A Claude Code plugin that connects AI assistants to open research infrastructure. The plugin provides access to the OpenAIRE Research Graph (600M+ research products across all disciplines) and full-text preprint collections from bioRxiv and medRxiv — through three MCP servers and a set of guided research skills.
+A Claude Code plugin that connects AI agents to open research infrastructure. The plugin provides access to the OpenAIRE Research Graph (600M+ research products across all disciplines) and full-text preprint collections from bioRxiv and medRxiv — through three MCP servers and a set of guided research skills.
 
 ## What It Does
 
@@ -36,7 +36,7 @@ Skills are invoked with the `/openscience:` prefix:
 
 ### From the marketplace (remote)
 
-Add the marketplace and install the plugin:
+Add the [Alien Intelligence marketplace](https://docs.alien.club) and install the plugin:
 
 ```bash
 /plugin marketplace add the-alien-club/mcp-plugins
