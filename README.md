@@ -36,7 +36,7 @@ Skills are invoked with the `/openscience:` prefix:
 
 ### From the marketplace (remote)
 
-Add the [Alien Intelligence marketplace](https://docs.alien.club) and install the plugin:
+Add the [Alien Intelligence marketplace](https://docs.alien.club/docs/guides/alien-marketplace) and install the plugin:
 
 ```bash
 /plugin marketplace add the-alien-club/mcp-plugins
