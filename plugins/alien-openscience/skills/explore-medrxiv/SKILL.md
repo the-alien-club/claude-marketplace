@@ -3,99 +3,79 @@ name: explore-medrxiv
 description: medRxiv Preprint Data Cluster Exploration Skill. Use when searching for preprint full-text content in clinical medicine, epidemiology, public health, and health sciences via the medRxiv MCP server.
 ---
 
-# medRxiv Preprint Data Cluster Exploration Skill
+# medRxiv Preprint Data Cluster
 
-You are searching and reading preprint manuscripts through the medRxiv data cluster. This server provides full-text access to medical and health sciences preprints organized by clinical speciality, with both keyword search (typo-tolerant, ranked) and semantic vector search (meaning-based similarity).
+Full-text access to medical and health sciences preprints. Its unique value is **clinical evidence text** — trial results, patient outcomes, epidemiological findings, and health policy analysis written in the papers themselves.
 
-## When to Use medRxiv vs OpenAIRE
+## When medRxiv Adds Value
 
-- **medRxiv**: Full-text search over clinical/health preprint manuscripts. Use when you need actual paper content — clinical trial details, epidemiological methods, patient cohort descriptions, statistical analyses, or health policy evidence buried in the body text.
-- **OpenAIRE**: Structured metadata search (titles, abstracts, citations, authors, projects, bibliometrics). Use for discovery, citation analysis, impact assessment, or finding published (peer-reviewed) work.
-- **Combine both**: Use OpenAIRE to identify influential studies by citation/impact, then medRxiv to read their full preprint content for clinical detail.
+Use medRxiv when you need **clinical/health content from papers**, not just metadata:
+- Clinical trial results and study designs
+- Epidemiological methods and cohort descriptions
+- Patient outcome data and statistical analyses
+- Public health policy evidence
+- Drug safety and efficacy data from preprints
+
+**Do not use medRxiv for:** basic science mechanisms (use bioRxiv), CS/ML topics (use WebSearch), or finding specific known papers by title (use OpenAIRE).
+
+## When to Choose medRxiv Over bioRxiv
+
+- Question about **what happens to patients** → medRxiv
+- Question about **how something works at molecular level** → bioRxiv
+- Question about **drug clinical outcomes** → medRxiv
+- Question about **drug mechanism of action** → bioRxiv
+- Question spans both → run both in parallel
+
+## Primary Tool: Vector Search
+
+```
+vector_search_chunks(
+  query="<clinical question in natural language>",
+  limit=10,
+  score_threshold=0.55
+)
+```
+
+**Use score_threshold=0.55, not 0.7.** Same rationale as bioRxiv — 0.7 is too restrictive for most queries.
+
+Write queries as clinical questions:
+- Good: `"long-term cardiovascular outcomes in patients treated with GLP-1 receptor agonists compared to standard care"`
+- Bad: `"GLP-1 cardiovascular"`
+
+## Secondary Tool: Keyword Search
+
+Better for specific clinical terms, drug names, trial identifiers:
+
+```
+keyword_search(
+  query="remdesivir COVID-19 hospitalization outcomes",
+  limit=10,
+  context_mode="smart",
+  response_format="markdown"
+)
+```
 
 ## Available Datasets
 
-medRxiv datasets are organized by clinical speciality (~50 categories). Largest collections:
+~50 clinical specialities. Largest:
 - Infectious Diseases (11,744), Epidemiology (10,367), Public and Global Health (6,627)
 - Neurology (4,512), Genetic and Genomic Medicine (4,393), Psychiatry (3,725)
 - Cardiovascular Medicine (3,129), Health Informatics (2,779), Oncology (2,243)
 
-Smaller but well-covered: Pediatrics, Ophthalmology, Surgery, Respiratory Medicine, Endocrinology, Gastroenterology, many more.
+Use `list_datasets` (with `response_format="markdown"`) to see specialities and scope searches with `dataset_ids`.
 
-Use `datacluster_list_datasets` to see all available specialities with entry counts.
+## Combining with OpenAIRE
 
-## Tool Routing
+1. **OpenAIRE** finds high-citation published studies (metadata + impact)
+2. **medRxiv** provides full-text clinical detail from preprint versions
 
-| Goal | Tool | Notes |
-|------|------|-------|
-| See available specialities | `datacluster_list_datasets` | Returns categories with entry counts |
-| Understand a dataset's structure | `datacluster_get_dataset` | Schema, fields, entry count |
-| Find papers by keywords | `datacluster_keyword_search` | Typo-tolerant, ranked, <50ms |
-| Find papers by meaning | `datacluster_vector_search_chunks` | Semantic similarity, snippet-level, <100ms |
-| Read a paper's full text | `datacluster_get_entry_content` | Paginate if >50K chars |
-| List files for an entry | `datacluster_get_entry_documents` | Original PDFs, processed text |
+This combination gives answers both **citation authority** and **clinical depth** (methods, outcomes, statistics from the text itself).
 
-## Context Budget Awareness
+## Context Budget
 
-### Safe in main context
-- `list_datasets` — always use `response_format="markdown"`. Never use `include_schema=true` (120K+ chars in JSON).
-- `keyword_search` (limit=10) — moderate output with snippets. Use `response_format="markdown"`.
-- `vector_search_chunks` (limit=10) — moderate output with chunks
-- `get_dataset` — use `response_format="markdown"`
-
-### Paginate or delegate
-- `get_entry_content` on long papers — use `char_offset` and `char_limit` to paginate. Never request full content of documents >50K chars in one call.
-
-## Search Strategy
-
-### Keyword search
-Best for: clinical terms, drug names, trial identifiers, ICD codes, specific conditions.
-
-```
-datacluster_keyword_search(
-  query="COVID-19 vaccine effectiveness booster dose",
-  limit=10, context_mode="smart"
-)
-```
-
-Filter by speciality:
-```
-datacluster_keyword_search(
-  query="GLP-1 receptor agonist cardiovascular outcomes",
-  dataset_ids=[<cardiovascular_medicine_id>],
-  limit=10
-)
-```
-
-### Vector/semantic search
-Best for: clinical questions phrased naturally, finding studies about a condition without knowing exact MeSH terms.
-
-```
-datacluster_vector_search_chunks(
-  query="long-term neurological effects after mild COVID infection in children",
-  limit=10, score_threshold=0.7
-)
-```
-
-### Combined strategy
-1. Start with vector search for broad clinical question discovery
-2. Refine with keyword search using specific clinical terms from initial results
-3. Read full content of the most relevant entries for methodology and outcomes
-
-## Parallel Search
-
-datacluster tools are stateless — run searches in parallel across different specialities or angles:
-
-```
-# All three in parallel
-datacluster_keyword_search(query="long COVID neurological", dataset_ids=[<neurology_id>], limit=5)
-datacluster_keyword_search(query="post-COVID syndrome cognitive", dataset_ids=[<psychiatry_id>], limit=5)
-datacluster_vector_search_chunks(query="persistent symptoms after SARS-CoV-2 infection affecting brain function", limit=5)
-```
-
-## Output Presentation
-
-- Search results: numbered list with entry IDs, titles, relevance scores, and key snippets
-- Full-text content: summarize key sections (background, methods, results, conclusions) rather than reproducing verbatim
-- Clinical findings: highlight study design, sample size, key outcomes, and confidence intervals when available
-- When results include DOIs: format as clickable links
+| Operation | Size | Action |
+|-----------|------|--------|
+| `vector_search_chunks` (10 results) | ~2000 chars | Safe |
+| `keyword_search` (10 results, markdown) | ~2000 chars | Safe |
+| `list_datasets` (markdown, no schema) | Small | Safe. Never `include_schema=true` |
+| `get_entry_content` (full paper) | 10K-100K | Paginate: use `char_offset` + `char_limit` |

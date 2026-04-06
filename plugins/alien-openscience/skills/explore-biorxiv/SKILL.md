@@ -3,96 +3,76 @@ name: explore-biorxiv
 description: bioRxiv Preprint Data Cluster Exploration Skill. Use when searching for preprint full-text content in biology, neuroscience, genomics, bioinformatics, and related life sciences via the bioRxiv MCP server.
 ---
 
-# bioRxiv Preprint Data Cluster Exploration Skill
+# bioRxiv Preprint Data Cluster
 
-You are searching and reading preprint manuscripts through the bioRxiv data cluster. This server provides full-text access to biology preprints organized by subject area, with both keyword search (typo-tolerant, ranked) and semantic vector search (meaning-based similarity).
+Full-text access to biology preprints. Its unique value over OpenAIRE is **quotable text** — you can find and cite what papers actually say about mechanisms, methods, and results, not just their titles and citation counts.
 
-## When to Use bioRxiv vs OpenAIRE
+## When bioRxiv Adds Value
 
-- **bioRxiv**: Full-text search over preprint manuscripts. Use when you need the actual content of papers, specific methods sections, experimental details, or when the answer is buried in the body text — not just metadata.
-- **OpenAIRE**: Structured metadata search (titles, abstracts, citations, authors, projects, bibliometrics). Use for discovery, citation analysis, impact assessment, or finding published (peer-reviewed) work.
-- **Combine both**: Use OpenAIRE to identify key papers by citation/impact, then bioRxiv to read their full preprint content for methodological detail.
+Use bioRxiv when you need **what's written in papers**, not just metadata:
+- Mechanistic explanations (how a process works at molecular/cellular level)
+- Methods details (experimental protocols, assay conditions)
+- Literature review passages that synthesize a subfield
+- Evidence statements with inline citations you can trace
+
+**Do not use bioRxiv for:** clinical outcomes (use medRxiv), CS/ML topics (use WebSearch), or finding specific known papers by title (use OpenAIRE).
+
+## Primary Tool: Vector Search
+
+`vector_search_chunks` is your main tool here. It returns **text passages** ranked by semantic similarity — exactly what you need for quotable content.
+
+```
+vector_search_chunks(
+  query="<natural language description of what you need>",
+  limit=10,
+  score_threshold=0.55
+)
+```
+
+**Use score_threshold=0.55, not 0.7.** At 0.7 you typically get 0-2 results. At 0.55 you get 5-10 useful passages with acceptable noise. Scores above 0.65 are high-quality hits.
+
+### Writing good vector search queries
+
+Write queries as you'd describe the topic to a colleague, not as keyword strings:
+- Good: `"how antibody drug conjugate linker stability affects payload release and off-target toxicity in vivo"`
+- Bad: `"ADC linker stability toxicity"`
+
+Longer, descriptive queries produce better semantic matches.
+
+## Secondary Tool: Keyword Search
+
+`keyword_search` is better for finding **specific papers** by exact terms:
+
+```
+keyword_search(
+  query="CRISPR-Cas9 off-target editing",
+  limit=10,
+  context_mode="smart",
+  response_format="markdown"
+)
+```
+
+Best for: author names, gene names, drug names, technique names, specific terminology.
 
 ## Available Datasets
 
-bioRxiv datasets are organized by subject area (~50 categories, up to 1000 entries each). Examples:
-- Neuroscience, Genomics, Bioinformatics, Cell Biology, Molecular Biology
-- Immunology, Microbiology, Ecology, Evolutionary Biology
-- Cancer Biology, Developmental Biology, Pharmacology
+~50 subject areas (up to 1000 entries each): Neuroscience, Genomics, Bioinformatics, Cell Biology, Molecular Biology, Immunology, Microbiology, Cancer Biology, Pharmacology, Biochemistry, and more.
 
-Use `datacluster_list_datasets` to see all available categories.
+Use `list_datasets` (with `response_format="markdown"`) to see categories and scope searches with `dataset_ids`.
 
-## Tool Routing
+## Combining with OpenAIRE
 
-| Goal | Tool | Notes |
-|------|------|-------|
-| See available subject areas | `datacluster_list_datasets` | Returns categories with entry counts |
-| Understand a dataset's structure | `datacluster_get_dataset` | Schema, fields, entry count |
-| Find papers by keywords | `datacluster_keyword_search` | Typo-tolerant, ranked, <50ms |
-| Find papers by meaning | `datacluster_vector_search_chunks` | Semantic similarity, snippet-level, <100ms |
-| Read a paper's full text | `datacluster_get_entry_content` | Paginate if >50K chars |
-| List files for an entry | `datacluster_get_entry_documents` | Original PDFs, processed text |
+The strongest research pattern is:
+1. **OpenAIRE** finds landmark papers (citation counts, influence class)
+2. **bioRxiv** provides quotable full-text from those or related papers
 
-## Context Budget Awareness
+This gives your answers both **authority** (high-citation papers) and **depth** (mechanistic detail from full text).
 
-### Safe in main context
-- `list_datasets` — always use `response_format="markdown"`. Never use `include_schema=true` (120K+ chars in JSON).
-- `keyword_search` (limit=10) — moderate output with snippets. Use `response_format="markdown"`.
-- `vector_search_chunks` (limit=10) — moderate output with chunks
-- `get_dataset` — use `response_format="markdown"`
+## Context Budget
 
-### Paginate or delegate
-- `get_entry_content` on long papers — use `char_offset` and `char_limit` to paginate. Never request full content of documents >50K chars in one call.
-
-## Search Strategy
-
-### Keyword search
-Best for: exact terms, known titles, author names, specific methods or gene names.
-
-```
-datacluster_keyword_search(
-  query="CRISPR-Cas9 gene editing efficiency",
-  limit=10, context_mode="smart"
-)
-```
-
-Filter by dataset to scope to a subject area:
-```
-datacluster_keyword_search(
-  query="single-cell RNA sequencing",
-  dataset_ids=[<genomics_dataset_id>],
-  limit=10
-)
-```
-
-### Vector/semantic search
-Best for: conceptual queries, finding papers about a technique without knowing exact terminology.
-
-```
-datacluster_vector_search_chunks(
-  query="methods for measuring protein-protein interactions in living cells",
-  limit=10, score_threshold=0.7
-)
-```
-
-### Combined strategy
-1. Start with vector search for broad discovery
-2. Refine with keyword search using specific terms from initial results
-3. Read full content of the most relevant entries
-
-## Parallel Search
-
-datacluster tools are stateless — run searches in parallel across different angles:
-
-```
-# All three in parallel
-datacluster_keyword_search(query="optogenetics cortical circuits", limit=5)
-datacluster_vector_search_chunks(query="using light to control neural activity in cortex", limit=5)
-datacluster_keyword_search(query="channelrhodopsin expression mouse", dataset_ids=[<neuroscience_id>], limit=5)
-```
-
-## Output Presentation
-
-- Search results: numbered list with entry IDs, titles, relevance scores, and key snippets
-- Full-text content: summarize key sections (abstract, methods, results, conclusions) rather than reproducing verbatim
-- When results include DOIs: format as clickable links
+| Operation | Size | Action |
+|-----------|------|--------|
+| `vector_search_chunks` (10 results) | ~2000 chars | Safe |
+| `keyword_search` (10 results, markdown) | ~2000 chars | Safe |
+| `list_datasets` (markdown, no schema) | Small | Safe. Never `include_schema=true` |
+| `get_entry_content` (full paper) | 10K-100K | Paginate: use `char_offset` + `char_limit` |

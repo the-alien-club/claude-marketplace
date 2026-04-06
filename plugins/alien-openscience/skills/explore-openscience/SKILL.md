@@ -5,61 +5,120 @@ description: Open Science Research Toolkit — strategy guide for searching acro
 
 # Open Science Research Toolkit
 
-You have access to multiple complementary research sources. Each has different strengths — understand what they offer, start where it makes sense, and broaden if your initial results are insufficient.
+## Metacognitive Frame
 
-## What Each Source Offers
+This skill gives you access to structured research tools (OpenAIRE, bioRxiv, medRxiv) alongside WebSearch. Before doing anything, adopt this frame — it will shape every tool choice you make in this session.
 
-**OpenAIRE** — Structured metadata graph covering all fields of science: 600M+ research products with titles, abstracts, authors, citations, bibliometric indicators, projects, and cross-product relationships. Strong for discovery, impact assessment, and navigating the scholarly record. No full text.
+**Notice your defaults.** You have a strong prior toward WebSearch. It's the general-purpose tool, it always returns something, and reaching for it feels like the safe move. This prior is well-calibrated for most tasks — but for research questions it leads you to use specialized MCP tools as redundant search engines (same keywords, same role) rather than for what they uniquely provide. The result: you get blog posts and vendor pages from WebSearch, while the structured evidence sitting in MCP goes unused.
 
-**bioRxiv / medRxiv** — Full-text preprint document stores with keyword and semantic search. Use when you need what's actually written in a paper — methods, experimental details, results, discussion. Load the per-source skill (`/alien-openscience:explore-biorxiv`, `/alien-openscience:explore-medrxiv`) for dataset details and search strategies.
+**Each source provides something the others structurally cannot:**
 
-**WebSearch** — Broadest but least structured. Complements MCP sources by reaching content they don't index — specific URLs, institutional pages, very recent work, or domains not yet covered by the data clusters.
+| Source | What only it provides |
+|--------|----------------------|
+| **OpenAIRE** | Bibliometric authority — citation counts, influence classes (C1-C5), field-normalized ranking. This lets you distinguish a landmark paper (899 citations, influence C3) from a blog post summarizing it. No other source quantifies a paper's importance. |
+| **bioRxiv** | Quotable full-text from biology preprints — what the paper actually says about mechanisms, methods, results. Not metadata, not summaries — the text itself. |
+| **medRxiv** | Same, for clinical medicine — trial results, patient outcomes, epidemiological evidence, written in the paper's own words. |
+| **WebSearch** | Breadth — everything MCP doesn't index. CS/ML papers, clinical guidelines, very recent work, institutional pages, specific known papers. |
 
-## How to Think About Source Selection
+**The test for whether you're using MCP well:** after answering, ask yourself — did OpenAIRE give me something I couldn't have gotten from WebSearch? If you only called `search_research_products` with the same keywords you'd put into WebSearch, the answer is no. If you called `find_by_influence_class` and got back the field's landmark papers ranked by normalized impact — that's unique value no web search can replicate.
 
-No rigid routing — use your judgement based on what the question needs:
+**Adopt this as a running practice:** after each research answer in a session, briefly note which sources earned their keep and which were overhead. This calibrates your intuition across questions and is more durable than any routing table.
 
-- **Looking up a specific paper by title or DOI?** OpenAIRE is structured for this.
-- **Need the actual content of a paper?** Dataclusters have full text. Try them.
-- **Assessing impact or tracing citations?** OpenAIRE has bibliometrics and citation networks.
-- **Exploring a topic broadly?** Start with whichever source feels most natural, broaden if results are thin.
+## The Workflow
 
-The key insight: **no single source is reliably sufficient**. OpenAIRE has metadata but not full text. Dataclusters have full text but not everything. When your first source doesn't give you enough, try another — don't keep refining the same query in the same source.
+### Step 1: MCP first (parallel with each other, not with WebSearch)
 
-## Broadening When Results Are Thin
+For any research question, start with these three calls in parallel:
 
-If your initial search returns sparse, irrelevant, or no results:
+```
+# 1. OpenAIRE: landmark papers via bibliometric filtering
+find_by_influence_class(influence_class="C3", query="<2-3 key terms>", page_size=10)
 
-1. **Try a different source** — metadata search and full-text search surface different things. A paper missed by one may be found by the other.
-2. **Try a different search mode** — keyword search is precise but brittle; vector/semantic search finds conceptually related content even with different terminology.
-3. **Search multiple sources in parallel** when the topic is broad or unfamiliar. This is efficient when warranted, not a default for every query.
-4. **WebSearch** fills gaps — if MCP sources don't have what you need, web search likely will. It also complements MCP results with additional context (published versions, institutional pages, news coverage).
+# 2. OpenAIRE: broader keyword search sorted by citations
+search_research_products(query="<2-4 terms>", sort_by="citationCount DESC", page_size=10, detail="standard")
 
-## Combining Results Across Sources
+# 3. Datacluster: full-text via semantic search
+vector_search_chunks(query="<natural language question>", limit=10, score_threshold=0.55)
+```
 
-When you get results from multiple sources:
+Which datacluster for #3:
+- **Mechanisms** (molecular, cellular, biochemical) → bioRxiv
+- **Clinical outcomes** (patients, trials, epidemiology) → medRxiv
+- **Both or unclear** → run both in parallel
 
-- Deduplicate — the same paper may appear across sources
-- Enrich — add citation data from OpenAIRE to papers found via full-text search, or read full text of high-impact papers discovered via metadata
-- Present the strongest evidence regardless of which source it came from
+### Step 2: Evaluate before reaching for WebSearch
+
+Name your gaps explicitly:
+- Did OpenAIRE return landmark papers? (citations > 100 = useful anchors)
+- Did the datacluster return quotable text? (score > 0.65 = directly usable)
+- What specific topics or papers are still missing?
+
+If MCP covered the core, WebSearch targets **periphery and recency** — not the same ground.
+
+### Step 3: Targeted WebSearch for named gaps
+
+Specific gap-filling queries only:
+- A known paper MCP missed (e.g., "Hamblett 2004 drug antibody ratio")
+- Clinical trial data, FDA approvals, guidelines
+- CS/ML/engineering topics (weak OpenAIRE coverage)
+- Very recent work (last 6 months)
+- Broad reviews that synthesize across many studies
+
+### Step 4: Cross-source enrichment
+
+- Papers from WebSearch → look up in OpenAIRE for citation counts before citing
+- Papers from OpenAIRE → check dataclusters for quotable full-text if you need mechanistic depth
+- Prefer citing with bibliometric data (citation count + influence class) when available
+
+## After You Answer
+
+Four self-check questions — brief, honest:
+
+1. **Did MCP surface anything WebSearch wouldn't have?** A paper with quantified influence class, a directly quotable preprint passage — if yes, MCP earned its keep.
+2. **Did you use OpenAIRE's unique features or just keyword search?** `find_by_influence_class` is what makes OpenAIRE irreplaceable. If you only used `search_research_products`, you treated it as a worse WebSearch.
+3. **Where did WebSearch genuinely fill a gap?** Specific papers, CS/ML, recent work, guidelines — legitimate territory. If it just duplicated MCP results, it was overhead.
+4. **Did you skip a relevant datacluster?** Clinical question without medRxiv? Mechanisms question without bioRxiv? Note it for next time.
+
+This reflection calibrates your source intuition across questions. Over a session, you'll develop a feel for which sources earn their keep on which question types — and that understanding generalizes better than any fixed routing rule.
+
+## Search Tips
+
+**OpenAIRE uses AND logic.** More terms = fewer results (opposite of Google). Keep queries to 2-4 key terms. If 0 results, drop a term.
+
+**Datacluster score threshold: 0.55, not 0.7.** At 0.7 you get 0-2 results and conclude "nothing here." At 0.55 you get 5-10 useful passages. Scores above 0.65 are high-quality hits.
+
+**`find_by_influence_class` is your most valuable first call.** C3 (top 1%) for most fields. C2 (top 0.1%) for very broad fields. This surfaces the papers that matter — `search_research_products` alone cannot do this.
+
+**Don't abandon MCP after one failed query.** Drop terms on OpenAIRE. Lower threshold on dataclusters. Try keyword instead of vector, or vice versa. Conclude "MCP doesn't have this" only after reformulation.
+
+**Adapt queries to the source.** Short keywords for OpenAIRE. Natural language descriptions for vector search. Specific gap descriptions for WebSearch. Sending the same string everywhere wastes each source's strengths.
+
+## Source Selection by Question Type
+
+| Question type | Start with | Then add | WebSearch for |
+|---|---|---|---|
+| **Literature synthesis** | OpenAIRE `find_by_influence_class` + `search_research_products` | bioRxiv/medRxiv vector search | Recency, specific missing papers |
+| **Citation identification** | OpenAIRE `main_title` or keyword search | — | WebFetch to read reference lists |
+| **Clinical/medical** | medRxiv keyword + vector search | OpenAIRE for citation authority | Guidelines, trial registries |
+| **Biology/methods** | bioRxiv vector search | OpenAIRE for metadata | Protocols, vendor docs |
+| **CS/ML/engineering** | WebSearch (weak MCP coverage) | OpenAIRE as secondary | The one case where WebSearch leads |
+
+## bioRxiv vs medRxiv
+
+- **bioRxiv**: Biology, neuroscience, genomics, bioinformatics, cell biology, molecular biology, immunology, pharmacology, cancer biology, biochemistry
+- **medRxiv**: Clinical medicine, epidemiology, public health, infectious diseases, clinical trials, surgery, psychiatry, cardiology, oncology outcomes
+
+**Mechanisms** → bioRxiv. **Patients** → medRxiv.
 
 ## Context Budget
 
 | Operation | Size | Action |
 |-----------|------|--------|
-| Any search with limit=5-10 | 500-2000 chars | Safe in main context |
-| `list_datasets` | Small with `response_format="markdown"` | Safe. Never use `include_schema=true` (120K+) |
-| OpenAIRE `get_project_outputs` | 30K+ chars | Always delegate to subagent |
-| OpenAIRE `analyze_coauthorship_network` | 15K+ chars | Always delegate to subagent |
-| Datacluster `get_entry_content` (full paper) | 10K-100K chars | Paginate with `char_offset`/`char_limit`, or delegate |
-| OpenAIRE `get_author_profile` (limit>30) | Scales linearly | Delegate to subagent |
-
-## Per-Source Skills
-
-For detailed tool routing, error patterns, and search strategies:
-
-- `/alien-openscience:explore-openaire` — OpenAIRE Research Graph (metadata, citations, bibliometrics)
-- `/alien-openscience:explore-biorxiv` — bioRxiv preprint data cluster (biology full-text)
-- `/alien-openscience:explore-medrxiv` — medRxiv preprint data cluster (medical/health full-text)
-
-Load the relevant skill when going deep with one source. This overview skill is sufficient for most research tasks.
+| `find_by_influence_class` (10 results) | ~500 chars | Safe — most valuable first call |
+| `search_research_products` (10, standard) | ~2500 chars | Safe |
+| `vector_search_chunks` (10 results) | ~2000 chars | Safe |
+| `keyword_search` (10, markdown) | ~2000 chars | Safe |
+| `list_datasets` (markdown, no schema) | Small | Safe. Never `include_schema=true` |
+| `get_project_outputs` | 30K+ | Always delegate to subagent |
+| `analyze_coauthorship_network` | 15K+ | Always delegate to subagent |
+| `get_entry_content` (full paper) | 10K-100K | Paginate with `char_offset`/`char_limit` |
