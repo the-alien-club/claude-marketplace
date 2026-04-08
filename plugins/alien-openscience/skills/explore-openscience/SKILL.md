@@ -28,17 +28,17 @@ This skill gives you access to structured research tools (OpenAIRE, bioRxiv, med
 
 ### Step 1: MCP first (parallel with each other, not with WebSearch)
 
-For any research question, start with these three calls in parallel:
+You MUST include `find_by_influence_class` and one `list_datasets` call in your first tool batch. Do not skip these in favor of `search_research_products` alone.
 
 ```
-# 1. OpenAIRE: landmark papers via bibliometric filtering
+# 1. OpenAIRE: landmark papers via bibliometric filtering (REQUIRED)
 find_by_influence_class(influence_class="C3", query="<2-3 key terms>", page_size=10)
 
 # 2. OpenAIRE: broader keyword search sorted by citations
 search_research_products(query="<2-4 terms>", sort_by="citationCount DESC", page_size=10, detail="standard")
 
-# 3. Datacluster: full-text via semantic search
-vector_search_chunks(query="<natural language question>", limit=10, score_threshold=0.55)
+# 3. Datacluster: discover available datasets, then search (REQUIRED for biomedical topics)
+list_datasets(response_format="markdown")  # Know what subject areas exist before searching
 ```
 
 Which datacluster for #3:
@@ -46,7 +46,16 @@ Which datacluster for #3:
 - **Clinical outcomes** (patients, trials, epidemiology) → medRxiv
 - **Both or unclear** → run both in parallel
 
-### Step 2: Evaluate before reaching for WebSearch
+Keep the dataset listing in your context — use it to select `dataset_ids` for targeted searches in subsequent steps.
+
+**Hard rule: If the topic is CS, ML, NLP, computer vision, physics, or social science — do NOT call bioRxiv or medRxiv. These are life science preprint servers with full-text access to biology and clinical medicine papers only. Use WebSearch for non-biomedical topics.**
+
+### Step 2: Evaluate results before reaching for WebSearch (REQUIRED)
+
+You MUST state in 1-2 sentences what you got from each source before proceeding. This is not optional — write it out explicitly:
+
+- **OpenAIRE:** "Got N landmark papers on [topic], highest cited: [X] with [N] citations" OR "0 results — topic too niche for keyword search"
+- **Datacluster:** "Got N passages, best score [X] on [topic] — usable/not usable" OR "Results off-topic — [source] does not cover this domain"
 
 Name your gaps explicitly:
 - Did OpenAIRE return landmark papers? (citations > 100 = useful anchors)
@@ -70,16 +79,16 @@ Specific gap-filling queries only:
 - Papers from OpenAIRE → check dataclusters for quotable full-text if you need mechanistic depth
 - Prefer citing with bibliometric data (citation count + influence class) when available
 
-## After You Answer
+## After You Answer (REQUIRED self-check)
 
-Four self-check questions — brief, honest:
+You MUST write a brief self-check after each research answer. If you find yourself skipping this, stop and do it now — it is not optional. Write one line per question:
 
-1. **Did MCP surface anything WebSearch wouldn't have?** A paper with quantified influence class, a directly quotable preprint passage — if yes, MCP earned its keep.
-2. **Did you use OpenAIRE's unique features or just keyword search?** `find_by_influence_class` is what makes OpenAIRE irreplaceable. If you only used `search_research_products`, you treated it as a worse WebSearch.
-3. **Where did WebSearch genuinely fill a gap?** Specific papers, CS/ML, recent work, guidelines — legitimate territory. If it just duplicated MCP results, it was overhead.
-4. **Did you skip a relevant datacluster?** Clinical question without medRxiv? Mechanisms question without bioRxiv? Note it for next time.
+1. **MCP unique value?** Name one thing MCP gave you that WebSearch couldn't (influence class, quotable passage, trend data). If nothing — note what you should have tried.
+2. **Did you use OpenAIRE as a research graph or as a keyword search engine?** OpenAIRE's value is structured bibliometric data — influence classes, citation networks, trend analysis, field-normalized ranking. If you only called `search_research_products` with the same keywords you'd put into WebSearch, you missed what makes it unique.
+3. **Datacluster evaluation?** Did you state whether datacluster results were usable? If you received results and moved on without commenting, go back and evaluate them now.
+4. **Did you skip a relevant datacluster?** Clinical question without medRxiv? Mechanisms question without bioRxiv?
 
-This reflection calibrates your source intuition across questions. Over a session, you'll develop a feel for which sources earn their keep on which question types — and that understanding generalizes better than any fixed routing rule.
+If you notice you skipped Steps 1 or 2 above — acknowledge it. This self-awareness is more valuable than retroactively fixing the search strategy.
 
 ## Search Tips
 
@@ -122,3 +131,13 @@ This reflection calibrates your source intuition across questions. Over a sessio
 | `get_project_outputs` | 30K+ | Always delegate to subagent |
 | `analyze_coauthorship_network` | 15K+ | Always delegate to subagent |
 | `get_entry_content` (full paper) | 10K-100K | Paginate with `char_offset`/`char_limit` |
+
+## Delegating to Subagents
+
+When you spawn Task subagents to parallelize research, treat them as first-class citizens — their results deserve the same evaluation and integration as your own tool calls. Be metacognitive about their capabilities.
+
+**Subagent fallback behavior:** If a subagent cannot access MCP tools or gets errors from MCP calls, it MUST fall back to WebSearch — never to Bash, Grep, curl, or any terminal-based workaround. Writing scripts to call APIs directly is never acceptable. If WebSearch is also not producing useful results, the subagent should return early with what it has and state clearly: "MCP tools unavailable, WebSearch insufficient for this subtopic."
+
+**Parent response to subagent failure:** If a subagent returns early due to tool access issues, do NOT spawn more subagents for the same task type. Instead, handle the remaining research directly in your main session where MCP tools are available, or accept the gap and synthesize from what you have.
+
+**Instruct subagents to be metacognitive.** When writing the subagent's prompt, explicitly tell it to monitor its own behavior: if it finds itself making many Bash calls, writing Python scripts, or repeatedly searching without finding useful results, it should stop, acknowledge the issue, and return control to you with whatever it has gathered so far. A subagent that recognizes it is stuck and returns early is far more valuable than one that spirals through hundreds of tool calls producing nothing useful.

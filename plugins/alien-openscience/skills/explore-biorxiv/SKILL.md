@@ -54,11 +54,14 @@ keyword_search(
 
 Best for: author names, gene names, drug names, technique names, specific terminology.
 
-## Available Datasets
+## Available Datasets (MUST call `list_datasets` before searching)
 
 ~50 subject areas (up to 1000 entries each): Neuroscience, Genomics, Bioinformatics, Cell Biology, Molecular Biology, Immunology, Microbiology, Cancer Biology, Pharmacology, Biochemistry, and more.
 
-Use `list_datasets` (with `response_format="markdown"`) to see categories and scope searches with `dataset_ids`.
+You MUST call `list_datasets(response_format="markdown")` before your first search. This is a small call (<500 chars) that tells you what subject areas exist and how many entries each has. Use the results to:
+- Confirm bioRxiv covers your topic (if not, use WebSearch instead)
+- Select `dataset_ids` for targeted searches (reduces noise)
+- Avoid searching a biology preprint server for non-biology topics
 
 ## Combining with OpenAIRE
 

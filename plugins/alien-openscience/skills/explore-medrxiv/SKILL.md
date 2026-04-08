@@ -55,14 +55,17 @@ keyword_search(
 )
 ```
 
-## Available Datasets
+## Available Datasets (MUST call `list_datasets` before searching)
 
 ~50 clinical specialities. Largest:
 - Infectious Diseases (11,744), Epidemiology (10,367), Public and Global Health (6,627)
 - Neurology (4,512), Genetic and Genomic Medicine (4,393), Psychiatry (3,725)
 - Cardiovascular Medicine (3,129), Health Informatics (2,779), Oncology (2,243)
 
-Use `list_datasets` (with `response_format="markdown"`) to see specialities and scope searches with `dataset_ids`.
+You MUST call `list_datasets(response_format="markdown")` before your first search. This is a small call (<500 chars) that tells you what clinical specialities exist and how many entries each has. Use the results to:
+- Confirm medRxiv covers your clinical area (if not, use WebSearch instead)
+- Select `dataset_ids` for targeted searches (reduces noise)
+- Avoid searching a medical preprint server for non-clinical topics
 
 ## Combining with OpenAIRE
 
