@@ -32,7 +32,7 @@ If you have a grant code, you can also search by `code=["<grant_code>"]`.
 Task(
   description="Get outputs for project <name>",
   subagent_type="general-purpose",
-  prompt="Use mcp__openaire-local__openaire_get_project_outputs with
+  prompt="Use openaire_get_project_outputs (via the OpenAIRE MCP server) with
     project_code='<code>' and page_size=100. Summarize: total outputs by type,
     top 5 most-cited publications, any datasets or software produced.
     Report counts and key DOIs."
