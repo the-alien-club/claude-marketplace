@@ -33,7 +33,7 @@ Output at limit=20 is ~2K chars (safe in main context). If limit>30, delegate to
 Task(
   description="Analyze coauthorship network for <name>",
   subagent_type="general-purpose",
-  prompt="Use mcp__openaire-local__openaire_analyze_coauthorship_network with
+  prompt="Use openaire_analyze_coauthorship_network (via the OpenAIRE MCP server) with
     author_name='<name>', max_depth=1, limit=30, min_collaborations=2.
     Summarize: total collaborators, top 5 by shared papers, any cross-institutional
     clusters. Report node count, edge count, and key collaborator names."
