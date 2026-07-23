@@ -1,0 +1,8 @@
+{
+  "name": "workflow-engine",
+  "description": "Build and run agentic workflows wired to a published Alien MCP config, executed via the OpenAI Responses API",
+  "version": "0.1.0",
+  "author": {
+    "name": "Alien Intelligence"
+  }
+}

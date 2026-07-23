@@ -1,102 +1,110 @@
-# Alien Open Science Plugin
+# Alien Intelligence — Claude Code Marketplace
 
-A Claude Code plugin that connects AI agents to open research infrastructure. The plugin provides access to the OpenAIRE Research Graph (600M+ research products across all disciplines) and full-text preprint collections from bioRxiv and medRxiv — through three MCP servers and a set of guided research skills.
+A Claude Code plugin marketplace for the Alien platform. It bundles two kinds of
+plugin: a ready-to-use **open-science research toolkit** backed by hosted MCP
+servers, and a set of **build-on-Alien** plugins that teach an agent how to
+operate the Alien platform through its MCP — ingest data, wrap APIs as tools,
+publish MCP configs, and build and run agentic workflows.
 
-## What It Does
+## Plugins
 
-The plugin registers three MCP servers that expose research data as tools Claude can call directly:
+### Research toolkit (works out of the box)
 
-| MCP Server | Source | Content |
-|------------|--------|---------|
-| **openaire** | OpenAIRE Research Graph | Structured metadata — titles, abstracts, authors, citations, bibliometrics, funded projects, and cross-product relationships across 600M+ research products |
-| **datacluster-medrxiv** | medRxiv preprints | Full-text clinical and health sciences preprints across 50+ medical specialities, with keyword and semantic search |
-| **datacluster-biorxiv** | bioRxiv preprints | Full-text biology preprints across 50+ subject categories, with keyword and semantic search |
+| Plugin | What it gives you |
+|--------|-------------------|
+| **openscience** | Access to the OpenAIRE Research Graph (600M+ research products) and full-text bioRxiv/medRxiv preprints through three hosted MCP servers, plus guided research skills. Bundles its own MCP endpoints — no setup beyond installing the plugin. |
 
-OpenAIRE provides the metadata layer — who published what, where, with what funding, and how it was cited. The bioRxiv and medRxiv data clusters provide the content layer — the actual text of preprints, searchable by keyword or semantic similarity.
+### Build on Alien (require the Alien MCP server + your access token)
 
-## Skills
+| Plugin | Install when you want to… |
+|--------|---------------------------|
+| **platform-basics** | Operate the platform: ingest documents, wrap an external API as MCP tools, publish/share an MCP config, set pricing, read analytics, clean up. |
+| **workflow-engine** | Build and run agents: compose nodes into an agent, attach tools/MCP servers/subagents, pick a model, and execute via an OpenAI-compatible Responses API. |
+| **mcp-tool-refinement** | Improve the MCP tools generated from an API so agents call them correctly. |
+| **recipes** | Follow an end-to-end cookbook: RAG-over-documents, API-to-agent, publish-and-share, multi-source research agent. |
+| **troubleshooting** | Diagnose and fix a failing Alien operation via the MCP. |
 
-The plugin ships four research skills that guide Claude through common research workflows:
-
-- **explore-openscience** — Entry point and router. Explains when to use each source and how to combine them for a given research question.
-- **explore-openaire** — Detailed guide for the OpenAIRE Research Graph, with nine scenario workflows covering literature review, author profiling, citation analysis, bibliometric assessment, dataset discovery, and more.
-- **explore-biorxiv** — Guide for searching and reading full-text biology preprints via the bioRxiv data cluster.
-- **explore-medrxiv** — Guide for searching and reading full-text medical preprints via the medRxiv data cluster.
-
-Skills are invoked with the `/openscience:` prefix:
-
-```
-/openscience:explore-openscience
-/openscience:explore-openaire
-/openscience:explore-biorxiv
-/openscience:explore-medrxiv
-```
+The build-on-Alien plugins document the `alien_*` tools exposed by the Alien MCP
+server; they do not stand up that server. Every call acts as the authenticated
+caller (per-request token relay of your own `oat_...` token), so a read-only
+token can inspect but not create.
 
 ## Installation
 
+Add the marketplace, then install the plugins you want.
+
 ### From the marketplace (remote)
 
-Add the [Alien Intelligence marketplace](https://docs.alien.club/docs/guides/alien-marketplace) and install the plugin:
-
 ```bash
-/plugin marketplace add the-alien-club/mcp-plugins
+/plugin marketplace add the-alien-club/claude-marketplace
 /plugin install openscience@alien
+/plugin install platform-basics@alien
+/plugin install workflow-engine@alien
 /reload-plugins
 ```
 
-### From a local directory
-
-If you have the repository cloned locally, point the marketplace at the repo root:
+### From a local checkout
 
 ```bash
 /plugin marketplace add ./
-/plugin install openscience@alien
+/plugin install workflow-engine@alien
 /reload-plugins
 ```
 
-The path is relative to your current working directory. If you are outside the repo, use the full path:
+The path is relative to your current working directory; use a full path if you
+are outside the repo.
 
-```bash
-/plugin marketplace add /path/to/mcp-plugins
-```
+### Connecting the Alien MCP server
 
-### Manual MCP registration
+The **openscience** plugin bundles its MCP endpoints, so it works as soon as it
+is installed. The build-on-Alien plugins expect the Alien platform MCP server to
+be connected to your client and authenticated with your access token — the
+skills drive the `alien_*` tools that server exposes.
 
-You can also register the MCP servers individually without using the plugin system:
+## Skills
 
-```bash
-claude mcp add openaire --transport http https://openaire.mcp.alien.club/mcp
-claude mcp add datacluster-medrxiv --transport http https://medrxiv.mcp.alien.club/mcp
-claude mcp add datacluster-biorxiv --transport http https://biorxiv.mcp.alien.club/mcp
-```
+**openscience** — `explore-openscience` (router), `explore-openaire` (+ nine
+scenario workflows), `explore-biorxiv`, `explore-medrxiv`. Invoked with the
+`/openscience:` prefix.
 
-This registers the servers but does not install the research skills.
+**platform-basics** — `alien-getting-started`, `alien-add-data`,
+`alien-external-api-to-mcp`, `alien-publish-mcp`, `alien-rbac-and-pricing`,
+`alien-analytics`, `alien-cleanup`.
 
-## Repository Structure
+**workflow-engine** — `alien-workflow-engine` (overview), `alien-build-agent`,
+`alien-workflow-nodes`, `alien-ai-models`, `alien-run-workflow`.
+
+**mcp-tool-refinement** — `alien-refine-mcp-tools`, `alien-build-refinement-agent`.
+
+**recipes** — `recipe-rag-agent-over-documents`, `recipe-api-to-agent`,
+`recipe-publish-and-share-a-source`, `recipe-multi-source-research-agent`.
+
+**troubleshooting** — `alien-troubleshooting`.
+
+Several build-on-Alien plugins bundle `reference/` docs (a node catalog, workflow
+architecture, refinement internals, and a failure catalog) that their skills link
+to for depth. Skills activate automatically when a task matches their
+description — you don't call them by hand.
+
+## Repository structure
 
 ```
 .claude-plugin/
-  marketplace.json            # Marketplace definition (name, owner, plugin list)
+  marketplace.json              # Marketplace definition (name "alien", plugin list)
 plugins/
-  alien-openscience/
-    .claude-plugin/
-      plugin.json             # Plugin metadata (name, version, description)
-    .mcp.json                 # MCP server endpoints for this environment
-    skills/
-      explore-openscience/
-        SKILL.md              # Research router skill
-      explore-openaire/
-        SKILL.md              # OpenAIRE research graph skill
-        scenarios/            # Nine detailed workflow guides
-      explore-biorxiv/
-        SKILL.md              # bioRxiv full-text search skill
-      explore-medrxiv/
-        SKILL.md              # medRxiv full-text search skill
+  alien-openscience/            # openscience — hosted research MCP + skills (.mcp.json)
+  alien-platform-basics/        # platform-basics
+  alien-workflow-engine/        # workflow-engine (+ reference/)
+  alien-mcp-tool-refinement/    # mcp-tool-refinement (+ reference/)
+  alien-recipes/                # recipes
+  alien-troubleshooting/        # troubleshooting (+ reference/)
 ```
 
-## Managing the Plugin
+Each plugin has its own `README.md` and, under `.claude-plugin/plugin.json`, its
+metadata. Directories keep the `alien-` prefix; plugin names (used for
+`install` and the `/name:` skill prefix) drop it.
 
-After installation, use these commands to manage the plugin:
+## Managing plugins
 
 ```bash
 /plugin list                              # See installed plugins
