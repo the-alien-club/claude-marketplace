@@ -8,9 +8,39 @@
   "plugins": [
     {
       "name": "openscience",
-      "description": "Open science toolkit — OpenAIRE Research Graph (600M+ products, citations, authors, projects) and bioRxiv/medRxiv preprint data clusters",
+      "description": "Open science toolkit \u2014 OpenAIRE Research Graph (600M+ products, citations, authors, projects) and bioRxiv/medRxiv preprint data clusters",
       "source": "./plugins/alien-openscience",
       "category": "research"
+    },
+    {
+      "name": "platform-basics",
+      "description": "Operate the Alien platform control-plane: orientation, document ingestion, wrapping an external API as MCP tools, publishing/sharing MCP configs, RBAC and pricing, analytics, and cleanup.",
+      "source": "./plugins/alien-platform-basics",
+      "category": "platform"
+    },
+    {
+      "name": "workflow-engine",
+      "description": "Build and run agentic workflows on Alien: the node/DAG model, the agent-building loop (tools, MCP servers, subagents), model selection, and execution via the OpenAI Responses API.",
+      "source": "./plugins/alien-workflow-engine",
+      "category": "workflows"
+    },
+    {
+      "name": "mcp-tool-refinement",
+      "description": "Refine the MCP tools Alien generates from an external API's OpenAPI spec so agents call them correctly \u2014 the concept, the safety rules, and a build-your-own refinement-agent recipe.",
+      "source": "./plugins/alien-mcp-tool-refinement",
+      "category": "tools"
+    },
+    {
+      "name": "recipes",
+      "description": "End-to-end cookbook chaining the atomic Alien tools into outcomes: RAG agent over documents, external API to agent, publish-and-share a source, multi-source research agent.",
+      "source": "./plugins/alien-recipes",
+      "category": "guides"
+    },
+    {
+      "name": "troubleshooting",
+      "description": "Diagnose and fix common Alien platform failures via the MCP: worker_disconnected, permission gaps, stuck ingestion, gateway timeouts, and invalid model slugs.",
+      "source": "./plugins/alien-troubleshooting",
+      "category": "support"
     }
   ]
 }

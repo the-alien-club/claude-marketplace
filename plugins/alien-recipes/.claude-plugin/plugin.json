@@ -1,0 +1,8 @@
+{
+  "name": "recipes",
+  "description": "End-to-end cookbook recipes that chain the atomic alien_* tools into complete outcomes on the Alien platform",
+  "version": "0.1.0",
+  "author": {
+    "name": "Alien Intelligence"
+  }
+}
