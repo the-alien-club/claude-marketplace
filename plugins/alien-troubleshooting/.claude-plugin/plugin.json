@@ -1,0 +1,8 @@
+{
+  "name": "troubleshooting",
+  "description": "Diagnose and fix common Alien platform failures via the MCP",
+  "version": "0.1.0",
+  "author": {
+    "name": "Alien Intelligence"
+  }
+}

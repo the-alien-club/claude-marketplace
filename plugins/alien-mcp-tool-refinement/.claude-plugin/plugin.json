@@ -1,0 +1,8 @@
+{
+  "name": "mcp-tool-refinement",
+  "description": "Refine the MCP tools the Alien platform generates from an external API's OpenAPI spec",
+  "version": "0.2.0",
+  "author": {
+    "name": "Alien Intelligence"
+  }
+}

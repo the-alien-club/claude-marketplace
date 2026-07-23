@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "alien-backend": {
+      "type": "http",
+      "url": "https://alien-backend.mcp.alien.club/mcp"
+    }
+  }
+}
