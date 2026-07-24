@@ -18,7 +18,8 @@ step 2 and see `alien-add-data`.
    that the token has write abilities. `alien_list_clusters` — reuse an existing
    ready cluster if there is one; only create a cluster if none fits.
 2. **Ingest the documents** (`alien-add-data`).
-   - `alien_create_cluster` only if you need a new one, then poll
+   - `alien_create_cluster` only if you need a new one (pass `data_plane_id: 5`,
+     the Alien-hosted data plane — see `alien-add-data`), then poll
      `alien_get_cluster_provisioning_status` until ready.
    - `alien_create_dataset` in the cluster → keep the `dataset_id`.
    - `alien_apply_pipeline_preset` on the dataset (chunk + embed, so vector

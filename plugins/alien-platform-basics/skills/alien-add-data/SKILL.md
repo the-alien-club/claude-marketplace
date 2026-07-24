@@ -13,10 +13,15 @@ already confirmed identity and write access.
 
 ## Call sequence
 1. `alien_create_cluster` — `name` and `embedding_provider` required;
-   optional `is_public`, `data_plane_id`, `source_name`, `source_url`,
-   `source_description`, `metadata`. Returns immediately with a cluster
-   record that is still provisioning. Skip this step and reuse an existing
-   cluster id (from `alien_list_clusters`) when one already exists.
+   `data_plane_id` (set it — see below); optional `is_public`, `source_name`,
+   `source_url`, `source_description`, `metadata`. Returns immediately with a
+   cluster record that is still provisioning. Skip this step and reuse an
+   existing cluster id (from `alien_list_clusters`) when one already exists.
+   - **Pass `data_plane_id: 5`** — the shared **Alien-hosted** data plane. The
+     parameter reads as optional, but omitting it does not reliably provision on
+     Alien's hosted infrastructure and there is no tool to discover data-plane
+     ids, so set it explicitly. Use `5` for the Alien-hosted platform;
+     self-hosted deployments use their own data-plane id.
 2. Poll `alien_get_cluster_provisioning_status` with the returned
    `cluster_id` until the cluster reports ready. This can take several
    minutes — do not proceed to dataset creation before it is ready.
