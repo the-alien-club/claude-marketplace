@@ -1,7 +1,7 @@
 {
   "name": "platform-basics",
   "description": "Base skills for the Alien platform control-plane: orientation, adding documents, wrapping external APIs as MCP tools, publishing MCP configs, RBAC/pricing, analytics, and lifecycle cleanup",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": {
     "name": "Alien Intelligence"
   }
